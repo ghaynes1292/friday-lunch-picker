@@ -1,10 +1,12 @@
 {
-  "name": "create-react-app",
+  "name": "friday-lunch-picker",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "firebase": "^4.5.2",
     "jss": "latest",
     "jss-preset-default": "latest",
+    "lodash": "^4.17.4",
     "material-ui": "next",
     "prop-types": "latest",
     "react": "latest",
