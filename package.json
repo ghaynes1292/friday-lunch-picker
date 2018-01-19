@@ -13,7 +13,8 @@
     "react-dom": "latest",
     "react-jss": "latest",
     "react-scripts": "latest",
-    "recompose": "latest"
+    "recompose": "latest",
+    "uuid": "^3.2.1"
   },
   "scripts": {
     "start": "react-scripts start",

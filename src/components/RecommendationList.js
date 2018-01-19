@@ -13,14 +13,17 @@ const styles = {
 
 class RecommendationList extends Component {
   render() {
-    const { user, current } = this.props;
-    return <Grid item xs={4}>
+    const { heading, recommendations, size = 4 } = this.props;
+    return <Grid item xs={size}>
       <Typography type="subheading" gutterBottom>
-        {current ? 'Your' : user && user.name} recommendations
+        {heading}
       </Typography>
-      {user && user.recommendations && user.recommendations.map((rec) =>
-        <div key={rec}>{rec}</div>
+      {recommendations && recommendations.map((rec) =>
+        <div key={rec.name}>{rec.name}</div>
       )}
+      {!recommendations && <div>
+        No recommendations yet!
+      </div>}
     </Grid>
   }
 }
