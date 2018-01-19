@@ -17,6 +17,7 @@ import AddRecommendation from '../components/AddRecommendation';
 import RandomRecommendation from '../components/RandomRecommendation';
 
 import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, firebaseDatabase } from '../util/firebase';
+import { getUserRecsObj } from '../util/selectors';
 
 const styles = {
   root: {
@@ -137,7 +138,7 @@ class Index extends Component {
             u !== user.uid && <RecommendationList
               key={u}
               heading={`${get(users, `${u}.name`, 'Something')}'s recommendations`}
-              recommendations={Object.values(pick(recommendations, intersection(Object.keys(recommendations), get(users, `${u}.recommendations`, []))))}
+              recommendations={Object.values(getUserRecsObj)}
             />
           )}
           <Grid item xs={12} className={classes.center}>
