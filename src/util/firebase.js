@@ -1,7 +1,7 @@
 import firebase from 'firebase'
 
 const config = {
-  apiKey: "AIzaSyCJFzB0l7ekmP6YMgVL3u2m9gt07dNEXQo",
+  apiKey: process.env.REACT_APP_FIREBASE_KEY,
   authDomain: "friday-lunch-picker.firebaseapp.com",
   databaseURL: "https://friday-lunch-picker.firebaseio.com",
   projectId: "friday-lunch-picker",
