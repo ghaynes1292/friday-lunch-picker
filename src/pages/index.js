@@ -3,12 +3,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'material-ui/Button';
-import Dialog, {
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-} from 'material-ui/Dialog';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
@@ -38,7 +32,6 @@ class Index extends Component {
   };
 
   componentWillMount() {
-    const { users, user } = this.state;
     firebaseAuth().onAuthStateChanged(user => {
       if (user) {
         return dbUsers.once('value').then((snapshot) => {
@@ -86,14 +79,14 @@ class Index extends Component {
   }
 
   handleRandom () {
-    const { users, user } = this.state;
+    const { users } = this.state;
     const allRecs = flatMap(Object.values(users), (o) => o.recommendations)
     this.setState({ currentRec: allRecs[Math.floor(Math.random() * allRecs.length)] })
   }
 
   renderLoggedIn () {
     const { classes } = this.props;
-    const { users, user, currentValue, currentRec } = this.state;
+    const { users, user, currentRec } = this.state;
     return user.email.slice(-13) !== '@moove-it.com'
       ? <Grid container spacing={24} className={classes.root}>
       <Grid item xs={12} className={classes.center}>

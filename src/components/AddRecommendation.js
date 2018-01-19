@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
-import withRoot from '../components/withRoot';
 import TextField from 'material-ui/TextField';
 
 const styles = {
@@ -25,7 +23,7 @@ class AddRecommendation extends Component {
   }
 
   render() {
-    const { classes, addRecommendation } = this.props;
+    const { classes } = this.props;
     const { value } = this.state;
 
     return <form noValidate autoComplete="off" onSubmit={(e) => this.handleSubmit(e, value)}>
