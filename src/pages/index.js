@@ -17,7 +17,7 @@ import AddRecommendation from '../components/AddRecommendation';
 import RandomRecommendation from '../components/RandomRecommendation';
 
 import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, firebaseDatabase } from '../util/firebase';
-import { getUserRecsObj } from '../util/selectors';
+import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs } from '../util/selectors';
 
 const styles = {
   root: {
@@ -96,6 +96,24 @@ class Index extends Component {
     firebaseDatabase.ref().update(updates);
   }
 
+  handleAddExistingRec (rec) {
+    const { users, user } = this.state;
+    const userNow = users[user.uid];
+    this.setState({
+      users: {
+        ...users,
+        [user.uid]: {
+          ...userNow,
+          recommendations: userNow.recommendations ? [...userNow.recommendations, rec.id] : [rec.id]
+        }
+      }
+    })
+    var updates = {};
+    updates['/users/' + user.uid + '/recommendations'] = userNow.recommendations ? [...userNow.recommendations, rec.id] : [rec.id];
+
+    firebaseDatabase.ref().update(updates);
+  }
+
   handleRandom () {
     const { users } = this.state;
     const allRecs = flatMap(Object.values(users), (o) => o.recommendations)
@@ -105,6 +123,7 @@ class Index extends Component {
   renderLoggedIn () {
     const { classes } = this.props;
     const { users, user, recommendations, currentRec } = this.state;
+    const localUser = users[user.uid]
     return user.email.slice(-13) !== '@moove-it.com'
       ? <Grid container spacing={24} className={classes.root}>
       <Grid item xs={12} className={classes.center}>
@@ -124,7 +143,9 @@ class Index extends Component {
           <RecommendationList
             heading='All Recommendations'
             size={12}
-            recommendations={Object.values(recommendations)}
+            mega
+            recommendations={sortRecsByName(recsAndUserRecs(recommendations, localUser))}
+            onClick={(rec) => { this.handleAddExistingRec(rec) }}
           />
         </Grid>
       </Grid>
@@ -133,12 +154,13 @@ class Index extends Component {
           <RecommendationList
             recommendations={[]}
             heading='Your recommendations'
+            recommendations={sortRecsByName(convertObjToArray(getUserRecs(recommendations, localUser)))}
           />
-          {Object.keys(users).map((u) =>
-            u !== user.uid && <RecommendationList
-              key={u}
-              heading={`${get(users, `${u}.name`, 'Something')}'s recommendations`}
-              recommendations={Object.values(getUserRecsObj)}
+          {convertObjToArray(users).map((mappedUser) =>
+            mappedUser.id !== user.uid && <RecommendationList
+              key={mappedUser.id}
+              heading={`${get(mappedUser, 'name', 'Something')}'s recommendations`}
+              recommendations={sortRecsByName(convertObjToArray(getUserRecs(recommendations, mappedUser)))}
             />
           )}
           <Grid item xs={12} className={classes.center}>
