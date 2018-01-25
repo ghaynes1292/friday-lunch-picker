@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import TextField from 'material-ui/TextField';
-import { nameExistsInRecs } from '../util/selectors';
 
 const styles = {
   textInput: {
@@ -39,7 +38,6 @@ class AddRecommendation extends Component {
         value={value}
         onChange={(e) => {
           this.setState({ value: e.target.value })
-          nameExistsInRecs({}, e.target.value)
         }}
         margin="normal"
         fullWidth

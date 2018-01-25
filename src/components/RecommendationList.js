@@ -5,19 +5,26 @@ import { withStyles } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 import Star from 'material-ui-icons/Star';
 import AddCircle from 'material-ui-icons/AddCircle';
+import Favorite from 'material-ui-icons/Favorite';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-
-
 
 const styles = theme => ({
   root: {
     width: '100%',
-    maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
   },
 });
 
 class RecommendationList extends Component {
+  renderIcon (rec) {
+    const { currentRec }= this.props;
+    if (currentRec && rec.name == currentRec.name) {
+      return <Star />
+    } else {
+      return rec.included ? <Favorite /> : <AddCircle />
+    }
+  }
+
   renderMegaList () {
     const { classes, heading, recommendations, size = 4, onAdd, onRemove } = this.props;
     return <List className={classes.root} dense>
@@ -28,7 +35,7 @@ class RecommendationList extends Component {
           onClick={() => rec.included ? onRemove(rec) : onAdd(rec)}>
           <ListItemText inset primary={rec.name} />
           <ListItemIcon>
-            {rec.included ? <Star /> : <AddCircle />}
+            {this.renderIcon(rec)}
           </ListItemIcon>
         </ListItem>
       )}
@@ -36,23 +43,40 @@ class RecommendationList extends Component {
   }
 
   renderUserList () {
-    const { classes, heading, recommendations, size = 4, onAdd } = this.props;
-    return recommendations.length !== 0
-      ? recommendations.map((rec) =>
-      <div key={rec.name}>{rec.name}</div>
-    )
-      : <div>
-      No recommendations yet!
-    </div>
+    const { classes, heading, recommendations, size = 4, makeRec, currentRec } = this.props;
+
+    return <List className={classes.root} dense>
+      {recommendations && recommendations.map((rec) =>
+        <ListItem
+          button={!!makeRec}
+          key={rec.id}
+          onClick={() => !!makeRec && makeRec(rec.id)}>
+          <ListItemText inset primary={rec.name} />
+          {!!makeRec &&
+            <ListItemIcon>
+              {currentRec && rec.name == currentRec.name ? <Star /> : <Favorite />}
+            </ListItemIcon>
+          }
+        </ListItem>
+      )}
+    </List>;
+  }
+
+  renderCurrentRec () {
+    const { currentRecText, currentRec } = this.props;
+    return <Typography type="subheading" gutterBottom>
+      {currentRecText}: {currentRec.name}
+    </Typography>
   }
 
   render() {
-    const { classes, heading, recommendations, size = 4, onAdd, mega } = this.props;
+    const { classes, heading, recommendations, size = 4, onAdd, mega, currentRec } = this.props;
     return <Grid item xs={size}>
       <Typography type="subheading" gutterBottom>
         {heading}
       </Typography>
       {mega ? this.renderMegaList() : this.renderUserList()}
+      {!mega && currentRec && this.renderCurrentRec()}
     </Grid>
   }
 }

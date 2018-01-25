@@ -5,10 +5,6 @@ import get from 'lodash/get';
 import sortBy from 'lodash/sortBy';
 import keys from 'lodash/keys';
 
-export const nameExistsInRecs = (recs, recName) => {
-  const normalizedString = recName.toLowerCase().replace(/[^a-z]+/gi, '');
-}
-
 export const getUserRecObjArray = (recs, user) => {
   return intersection(Object.keys(recs), user.recommendations);
 }
@@ -31,3 +27,7 @@ export const recsAndUserRecs = (recs, user) => convertObjToArray(recs).map((rec)
     ...rec,
     included: user.recommendations && user.recommendations.includes(rec.id) }
   ))
+
+export const getCurrentRec = (recs, user) => {
+  return user && recs && user.currentRecommendation && recs[user.currentRecommendation] && recs[user.currentRecommendation]
+}

@@ -18,7 +18,7 @@ import AddRecommendation from '../components/AddRecommendation';
 import RandomRecommendation from '../components/RandomRecommendation';
 
 import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, firebaseDatabase } from '../util/firebase';
-import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs } from '../util/selectors';
+import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec } from '../util/selectors';
 
 const styles = {
   root: {
@@ -143,6 +143,25 @@ class Index extends Component {
     firebaseDatabase.ref().update(updates);
   }
 
+  handleMakeRec (rec) {
+    const { users, user } = this.state;
+    const userNow = users[user.uid];
+
+    this.setState({
+      users: {
+        ...users,
+        [user.uid]: {
+          ...userNow,
+          currentRecommendation: rec
+        }
+      }
+    })
+    var updates = {};
+    updates['/users/' + user.uid + '/currentRecommendation'] = rec;
+
+    firebaseDatabase.ref().update(updates);
+  }
+
   handleRandom () {
     const { users } = this.state;
     const allRecs = flatMap(Object.values(users), (o) => o.recommendations)
@@ -176,6 +195,7 @@ class Index extends Component {
             recommendations={sortRecsByName(recsAndUserRecs(recommendations, localUser))}
             onAdd={(rec) => { this.handleAddExistingRec(rec) }}
             onRemove={(rec) => { this.handleRemoveRec(rec) }}
+            currentRec={getCurrentRec(recommendations, localUser)}
           />
         </Grid>
       </Grid>
@@ -184,13 +204,17 @@ class Index extends Component {
           <RecommendationList
             recommendations={[]}
             heading='Your recommendations'
+            currentRecText='Your current recommendation'
             recommendations={sortRecsByName(convertObjToArray(getUserRecs(recommendations, localUser)))}
+            currentRec={getCurrentRec(recommendations, localUser)}
+            makeRec={(rec) => { this.handleMakeRec(rec) }}
           />
           {convertObjToArray(users).map((mappedUser) =>
             mappedUser.id !== user.uid && <RecommendationList
               key={mappedUser.id}
               heading={`${get(mappedUser, 'name', 'Something')}'s recommendations`}
               recommendations={sortRecsByName(convertObjToArray(getUserRecs(recommendations, mappedUser)))}
+              currentRec={getCurrentRec(recommendations, mappedUser)}
             />
           )}
           <Grid item xs={12} className={classes.center}>
