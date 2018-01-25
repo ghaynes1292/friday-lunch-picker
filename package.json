@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "firebase": "^4.5.2",
+    "firebase": "^4.9.0",
     "jss": "latest",
     "jss-preset-default": "latest",
     "lodash": "^4.17.4",

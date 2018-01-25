@@ -29,5 +29,5 @@ export const convertObjToArray = obj => keys(obj).map((key) => ({ id: key, ...ob
 export const recsAndUserRecs = (recs, user) => convertObjToArray(recs).map((rec) =>
   ({
     ...rec,
-    included: user.recommendations.includes(rec.id) }
+    included: user.recommendations && user.recommendations.includes(rec.id) }
   ))
