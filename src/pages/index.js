@@ -204,7 +204,6 @@ class Index extends Component {
           <RecommendationList
             recommendations={[]}
             heading='Your recommendations'
-            currentRecText='Your current recommendation'
             recommendations={sortRecsByName(convertObjToArray(getUserRecs(recommendations, localUser)))}
             currentRec={getCurrentRec(recommendations, localUser)}
             makeRec={(rec) => { this.handleMakeRec(rec) }}

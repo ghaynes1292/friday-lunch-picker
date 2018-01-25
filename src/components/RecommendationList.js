@@ -52,21 +52,14 @@ class RecommendationList extends Component {
           key={rec.id}
           onClick={() => !!makeRec && makeRec(rec.id)}>
           <ListItemText inset primary={rec.name} />
-          {!!makeRec &&
+          {currentRec && rec.name == currentRec.name &&
             <ListItemIcon>
-              {currentRec && rec.name == currentRec.name ? <Star /> : <Favorite />}
+              <Star />
             </ListItemIcon>
           }
         </ListItem>
       )}
     </List>;
-  }
-
-  renderCurrentRec () {
-    const { currentRecText, currentRec } = this.props;
-    return <Typography type="subheading" gutterBottom>
-      {currentRecText}: {currentRec.name}
-    </Typography>
   }
 
   render() {
@@ -76,7 +69,6 @@ class RecommendationList extends Component {
         {heading}
       </Typography>
       {mega ? this.renderMegaList() : this.renderUserList()}
-      {!mega && currentRec && this.renderCurrentRec()}
     </Grid>
   }
 }
