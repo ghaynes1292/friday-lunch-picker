@@ -19,13 +19,13 @@ const styles = theme => ({
 
 class RecommendationList extends Component {
   renderMegaList () {
-    const { classes, heading, recommendations, size = 4, onClick } = this.props;
+    const { classes, heading, recommendations, size = 4, onAdd, onRemove } = this.props;
     return <List className={classes.root} dense>
       {recommendations && recommendations.map((rec) =>
         <ListItem
-          button={!rec.included}
+          button
           key={rec.name}
-          onClick={() => onClick(rec)}>
+          onClick={() => rec.included ? onRemove(rec) : onAdd(rec)}>
           <ListItemText inset primary={rec.name} />
           <ListItemIcon>
             {rec.included ? <Star /> : <AddCircle />}
@@ -36,7 +36,7 @@ class RecommendationList extends Component {
   }
 
   renderUserList () {
-    const { classes, heading, recommendations, size = 4, onClick } = this.props;
+    const { classes, heading, recommendations, size = 4, onAdd } = this.props;
     return recommendations.length !== 0
       ? recommendations.map((rec) =>
       <div key={rec.name}>{rec.name}</div>
@@ -47,7 +47,7 @@ class RecommendationList extends Component {
   }
 
   render() {
-    const { classes, heading, recommendations, size = 4, onClick, mega } = this.props;
+    const { classes, heading, recommendations, size = 4, onAdd, mega } = this.props;
     return <Grid item xs={size}>
       <Typography type="subheading" gutterBottom>
         {heading}

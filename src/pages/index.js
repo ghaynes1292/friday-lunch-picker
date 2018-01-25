@@ -11,6 +11,7 @@ import pick from 'lodash/pick';
 import flatMap from 'lodash/flatMap';
 import intersection from 'lodash/intersection';
 import get from 'lodash/get';
+import without from 'lodash/without';
 import withRoot from '../components/withRoot';
 import RecommendationList from '../components/RecommendationList';
 import AddRecommendation from '../components/AddRecommendation';
@@ -29,6 +30,15 @@ const styles = {
   },
   'justifyCenter': {
     justifyContent: 'center',
+  },
+  masterList: {
+    textAlign: 'center',
+    top: '0',
+    position: 'absolute'
+  },
+  usersList: {
+    textAlign: 'center',
+    marginLeft: '15%'
   },
 };
 
@@ -114,6 +124,25 @@ class Index extends Component {
     firebaseDatabase.ref().update(updates);
   }
 
+  handleRemoveRec (rec) {
+    const { users, user } = this.state;
+    const userNow = users[user.uid];
+
+    this.setState({
+      users: {
+        ...users,
+        [user.uid]: {
+          ...userNow,
+          recommendations: without(userNow.recommendations, rec.id)
+        }
+      }
+    })
+    var updates = {};
+    updates['/users/' + user.uid + '/recommendations'] = without(userNow.recommendations, rec.id);
+
+    firebaseDatabase.ref().update(updates);
+  }
+
   handleRandom () {
     const { users } = this.state;
     const allRecs = flatMap(Object.values(users), (o) => o.recommendations)
@@ -138,18 +167,19 @@ class Index extends Component {
           Welcome
         </Typography>
       </Grid>
-      <Grid item xs={2} className={classes.center}>
+      <Grid item xs={2} className={classes.masterList}>
         <Grid container spacing={24} className={classes.justifyCenter}>
           <RecommendationList
             heading='All Recommendations'
             size={12}
             mega
             recommendations={sortRecsByName(recsAndUserRecs(recommendations, localUser))}
-            onClick={(rec) => { this.handleAddExistingRec(rec) }}
+            onAdd={(rec) => { this.handleAddExistingRec(rec) }}
+            onRemove={(rec) => { this.handleRemoveRec(rec) }}
           />
         </Grid>
       </Grid>
-      <Grid item xs={10} className={classes.center}>
+      <Grid item xs={10} className={classes.usersList}>
         <Grid container spacing={24}>
           <RecommendationList
             recommendations={[]}
