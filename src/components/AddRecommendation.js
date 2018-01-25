@@ -31,9 +31,10 @@ class AddRecommendation extends Component {
         Add you own recommendations:
       </Typography>
       <TextField
+        disabled
         id="Recommendation"
         className={classes.textInput}
-        label="Recommendation"
+        label="Recommendation - disbled for now"
         placeholder='Add a new Recommendation'
         value={value}
         onChange={(e) => {

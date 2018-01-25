@@ -6,6 +6,7 @@ import Grid from 'material-ui/Grid';
 import Star from 'material-ui-icons/Star';
 import AddCircle from 'material-ui-icons/AddCircle';
 import Favorite from 'material-ui-icons/Favorite';
+import MoodBad from 'material-ui-icons/MoodBad';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 
 const styles = theme => ({
@@ -59,6 +60,12 @@ class RecommendationList extends Component {
           }
         </ListItem>
       )}
+      {recommendations.length === 0 && <ListItem>
+        <ListItemText inset primary='No Recommendations yet!' />
+          <ListItemIcon>
+            <MoodBad />
+          </ListItemIcon>
+      </ListItem>}
     </List>;
   }
 
