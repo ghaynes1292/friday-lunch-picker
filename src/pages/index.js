@@ -18,7 +18,7 @@ import AddRecommendation from '../components/AddRecommendation';
 import RandomRecommendation from '../components/RandomRecommendation';
 
 import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, firebaseDatabase } from '../util/firebase';
-import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec } from '../util/selectors';
+import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec, getSortedRecCount, getRecById } from '../util/selectors';
 
 const styles = {
   root: {
@@ -224,10 +224,9 @@ class Index extends Component {
                 />
               </Grid>
               <Grid item xs={4} className={classes.center}>
-                <RandomRecommendation
-                  rec={currentRec}
-                  getRandomRecommendation={() => this.handleRandom()}
-                />
+                {getSortedRecCount(recommendations, users).map(rec => rec.id !== 'undefined' && <div key={rec.id}>
+                  {rec.name}: {rec.count}
+                </div>)}
               </Grid>
             </Grid>
           </Grid>
