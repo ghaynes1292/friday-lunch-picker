@@ -16,9 +16,10 @@ import withRoot from '../components/withRoot';
 import RecommendationList from '../components/RecommendationList';
 import AddRecommendation from '../components/AddRecommendation';
 import RandomRecommendation from '../components/RandomRecommendation';
+import Clock from '../components/Clock';
 
 import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, firebaseDatabase } from '../util/firebase';
-import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec, getSortedRecCount, getRecById } from '../util/selectors';
+import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec, getSortedRecCount, getRecById, getCurrentRecWinner } from '../util/selectors';
 
 const styles = {
   root: {
@@ -47,7 +48,7 @@ class Index extends Component {
     user: null,
     users: {},
     recommendations: {},
-    currentRec: ''
+    currentRec: '',
   };
 
   componentWillMount() {
@@ -170,8 +171,9 @@ class Index extends Component {
 
   renderLoggedIn () {
     const { classes } = this.props;
-    const { users, user, recommendations, currentRec } = this.state;
-    const localUser = users[user.uid]
+    const { users, user, recommendations, currentRec, currentTime } = this.state;
+    const localUser = users[user.uid];
+
     return user.email.slice(-13) !== '@moove-it.com'
       ? <Grid container spacing={24} className={classes.root}>
       <Grid item xs={12} className={classes.center}>
@@ -182,9 +184,30 @@ class Index extends Component {
     </Grid>
       : <Grid container spacing={24} className={classes.root}>
       <Grid item xs={12} className={classes.center}>
-        <Typography type="display2" gutterBottom>
-          Welcome
+        <Typography type="display3" gutterBottom>
+          Choose Your Lunch
         </Typography>
+      </Grid>
+      <Grid item xs={12} className={classes.center}>
+        <Grid container spacing={24}>
+          <Grid item xs={6} className={classes.center}>
+            <Typography type="display2" gutterBottom>
+              Winner: {get(getSortedRecCount(recommendations, users), '[0].name')}
+              {currentTime}
+            </Typography>
+          </Grid>
+          <Grid item xs={3} className={classes.center}>
+            <Typography type="display1" gutterBottom>
+              Scores:
+            </Typography>
+            {getSortedRecCount(recommendations, users).map(rec => <div key={rec.id}>
+              {rec.name}: {rec.currentCount} - {rec.totalCount}
+            </div>)}
+          </Grid>
+          <Grid item xs={3} className={classes.center}>
+            <Clock />
+          </Grid>
+        </Grid>
       </Grid>
       <Grid item xs={2} className={classes.masterList}>
         <Grid container spacing={24} className={classes.justifyCenter}>
@@ -216,20 +239,6 @@ class Index extends Component {
               currentRec={getCurrentRec(recommendations, mappedUser)}
             />
           )}
-          <Grid item xs={12} className={classes.center}>
-            <Grid container spacing={24}>
-              <Grid item xs={5} className={classes.center}>
-                <AddRecommendation
-                  addRecommendation={(val) => this.handleAddRecommendation(val)}
-                />
-              </Grid>
-              <Grid item xs={4} className={classes.center}>
-                {getSortedRecCount(recommendations, users).map(rec => rec.id !== 'undefined' && <div key={rec.id}>
-                  {rec.name}: {rec.count}
-                </div>)}
-              </Grid>
-            </Grid>
-          </Grid>
         </Grid>
       </Grid>
     </Grid>

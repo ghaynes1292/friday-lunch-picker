@@ -6,6 +6,7 @@ import sortBy from 'lodash/sortBy';
 import keys from 'lodash/keys';
 import countBy from 'lodash/countBy';
 import mapValues from 'lodash/mapValues';
+import reject from 'lodash/reject';
 
 export const getUserRecObjArray = (recs, user) => {
   return intersection(Object.keys(recs), user.recommendations);
@@ -35,13 +36,17 @@ export const getCurrentRec = (recs, user) => {
 }
 
 export const getRecCount = (recs, users) => convertObjToArray(
-  mapValues(mostPopularRec(recs, users), (value, key) => ({ count: value, id: key, name: getRecById(key, recs) }))
+  mapValues(mostPopularRec(recs, users), (value, key) => ({ currentCount: value, totalCount: popularRec(recs, users, key), id: key, name: getRecById(key, recs) }))
 )
 
-export const getSortedRecCount = (recs, users) => sortBy(getRecCount(recs, users), ['name', 'count'])
+export const getSortedRecCount = (recs, users) => reject(sortBy(getRecCount(recs, users), (rec) => ((rec.currentCount * 100) + (rec.totalCount * 30)) * -1), ['id', 'undefined'])
 
 export const getRecById = (id, recs) => recs[id] && recs[id].name
 
 export const mostPopularRec = (recs, users) => {
   return countBy(convertObjToArray(users).map(user => user.currentRecommendation))
 }
+
+export const popularRec = (recs, users, rec) => convertObjToArray(users).filter((user) => user && user.recommendations && user.recommendations.includes(rec)).length
+
+export const getCurrentRecWinner = (recs, users) => console.log(mostPopularRec(recs, users))

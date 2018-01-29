@@ -9,6 +9,8 @@
     "lodash": "^4.17.4",
     "material-ui": "next",
     "material-ui-icons": "^1.0.0-beta.17",
+    "moment": "^2.20.1",
+    "moment-timer": "^1.2.2",
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
