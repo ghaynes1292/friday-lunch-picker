@@ -70,7 +70,7 @@ class RecommendationList extends Component {
   }
 
   render() {
-    const { heading, size = 4, mega, absent } = this.props;
+    const { heading, size, mega, absent } = this.props;
     return <Grid item xs={size}>
       <Typography type="subheading" gutterBottom>
         {heading}{absent && ' (Absent)'}

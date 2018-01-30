@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
+import compose from 'recompose/compose';
 import { withStyles } from 'material-ui/styles';
+import withWidth from 'material-ui/utils/withWidth';
 import uuid from 'uuid/v4';
 import flatMap from 'lodash/flatMap';
 import get from 'lodash/get';
@@ -17,7 +19,7 @@ import Clock from '../components/Clock';
 import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, firebaseDatabase } from '../util/firebase';
 import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec, getSortedRecCount } from '../util/selectors';
 
-const styles = {
+const styles = (theme) => ({
   root: {
     textAlign: 'center',
     paddingTop: 50,
@@ -33,11 +35,21 @@ const styles = {
     top: '0',
     position: 'absolute'
   },
+  header: {
+    textAlign: 'center',
+    marginLeft: '18%',
+    [theme.breakpoints.only('xl')]: {
+      marginLeft: '15%'
+    },
+  },
   usersList: {
     textAlign: 'center',
-    marginLeft: '15%'
+    marginLeft: '20%',
+    [theme.breakpoints.only('xl')]: {
+      marginLeft: '15%'
+    },
   },
-};
+});
 
 class Index extends Component {
   state = {
@@ -184,14 +196,14 @@ class Index extends Component {
           Choose Your Lunch
         </Typography>
       </Grid>
-      <Grid item xs={12} className={classes.center}>
+      <Grid item xs={12} className={classes.header}>
         <Grid container spacing={24}>
-          <Grid item xs={6} className={classes.center}>
+          <Grid item xs={4} className={classes.center}>
             <Typography type="display2" gutterBottom>
               Winner: {get(getSortedRecCount(recommendations, users), '[0].name')}
             </Typography>
           </Grid>
-          <Grid item xs={3} className={classes.center}>
+          <Grid item xs={3} xl={3} className={classes.center}>
             <Typography type="display1" gutterBottom>
               Scores:
             </Typography>
@@ -204,7 +216,7 @@ class Index extends Component {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={2} className={classes.masterList}>
+      <Grid item xs={3} className={classes.masterList}>
         <Grid container spacing={24} className={classes.justifyCenter}>
           <RecommendationList
             heading='All Recommendations'
@@ -267,4 +279,4 @@ Index.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withRoot(withStyles(styles)(Index));
+export default compose(withStyles(styles), withWidth())(Index);

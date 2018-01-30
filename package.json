@@ -16,7 +16,7 @@
     "react-dom": "latest",
     "react-jss": "latest",
     "react-scripts": "latest",
-    "recompose": "latest",
+    "recompose": "^0.26.0",
     "uuid": "^3.2.1"
   },
   "scripts": {
