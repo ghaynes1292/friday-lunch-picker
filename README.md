@@ -1,21 +1,15 @@
-# Create React App example
+# Friday Lunch Picker
 
 ## How to use
-
-Download the example [or clone the repo](https://github.com/callemall/material-ui):
-
-```bash
-curl https://codeload.github.com/callemall/material-ui/tar.gz/v1-beta | tar -xz --strip=2 material-ui-1-beta/examples/create-react-app
-cd create-react-app
-```
+1. Clone Repo
+2. cd into repo
+3. ????
+4. Profit
 
 Install it and run:
 
 ```bash
-npm install
-npm run start
+sudo npm uninstall npm -g
+yarn
+yarn start
 ```
-
-## The idea behind the example
-
-[Create React App](https://github.com/facebookincubator/create-react-app) with no build configuration.
