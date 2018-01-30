@@ -19,7 +19,7 @@ const styles = theme => ({
 class RecommendationList extends Component {
   renderIcon (rec) {
     const { currentRec }= this.props;
-    if (currentRec && rec.name == currentRec.name) {
+    if (currentRec && rec.name === currentRec.name) {
       return <Star />
     } else {
       return rec.included ? <Favorite /> : <AddCircle />
@@ -27,7 +27,7 @@ class RecommendationList extends Component {
   }
 
   renderMegaList () {
-    const { classes, heading, recommendations, size = 4, onAdd, onRemove } = this.props;
+    const { classes, recommendations, onAdd, onRemove } = this.props;
     return <List className={classes.root} dense>
       {recommendations && recommendations.map((rec) =>
         <ListItem
@@ -44,7 +44,7 @@ class RecommendationList extends Component {
   }
 
   renderUserList () {
-    const { classes, heading, recommendations, size = 4, makeRec, currentRec } = this.props;
+    const { classes, recommendations, makeRec, currentRec } = this.props;
 
     return <List className={classes.root} dense>
       {recommendations && recommendations.map((rec) =>
@@ -53,7 +53,7 @@ class RecommendationList extends Component {
           key={rec.id}
           onClick={() => !!makeRec && makeRec(rec.id)}>
           <ListItemText inset primary={rec.name} />
-          {currentRec && rec.name == currentRec.name &&
+          {currentRec && rec.name === currentRec.name &&
             <ListItemIcon>
               <Star />
             </ListItemIcon>
@@ -70,10 +70,10 @@ class RecommendationList extends Component {
   }
 
   render() {
-    const { classes, heading, recommendations, size = 4, onAdd, mega, currentRec } = this.props;
+    const { heading, size = 4, mega, absent } = this.props;
     return <Grid item xs={size}>
       <Typography type="subheading" gutterBottom>
-        {heading}
+        {heading}{absent && ' (Absent)'}
       </Typography>
       {mega ? this.renderMegaList() : this.renderUserList()}
     </Grid>

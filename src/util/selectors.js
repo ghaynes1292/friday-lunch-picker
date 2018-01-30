@@ -1,5 +1,4 @@
 import pick from 'lodash/pick';
-import flatMap from 'lodash/flatMap';
 import intersection from 'lodash/intersection';
 import get from 'lodash/get';
 import sortBy from 'lodash/sortBy';
@@ -44,9 +43,7 @@ export const getSortedRecCount = (recs, users) => reject(sortBy(getRecCount(recs
 export const getRecById = (id, recs) => recs[id] && recs[id].name
 
 export const mostPopularRec = (recs, users) => {
-  return countBy(convertObjToArray(users).map(user => user.currentRecommendation))
+  return countBy(convertObjToArray(users).map(user => user.absent ? undefined : user.currentRecommendation))
 }
 
-export const popularRec = (recs, users, rec) => convertObjToArray(users).filter((user) => user && user.recommendations && user.recommendations.includes(rec)).length
-
-export const getCurrentRecWinner = (recs, users) => console.log(mostPopularRec(recs, users))
+export const popularRec = (recs, users, rec) => convertObjToArray(users).filter((user) => user && user.recommendations && !user.absent && user.recommendations.includes(rec)).length

@@ -7,19 +7,15 @@ import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 import uuid from 'uuid/v4';
-import pick from 'lodash/pick';
 import flatMap from 'lodash/flatMap';
-import intersection from 'lodash/intersection';
 import get from 'lodash/get';
 import without from 'lodash/without';
 import withRoot from '../components/withRoot';
 import RecommendationList from '../components/RecommendationList';
-import AddRecommendation from '../components/AddRecommendation';
-import RandomRecommendation from '../components/RandomRecommendation';
 import Clock from '../components/Clock';
 
 import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, firebaseDatabase } from '../util/firebase';
-import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec, getSortedRecCount, getRecById, getCurrentRecWinner } from '../util/selectors';
+import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec, getSortedRecCount } from '../util/selectors';
 
 const styles = {
   root: {
@@ -171,7 +167,7 @@ class Index extends Component {
 
   renderLoggedIn () {
     const { classes } = this.props;
-    const { users, user, recommendations, currentRec, currentTime } = this.state;
+    const { users, user, recommendations } = this.state;
     const localUser = users[user.uid];
 
     return user.email.slice(-13) !== '@moove-it.com'
@@ -193,7 +189,6 @@ class Index extends Component {
           <Grid item xs={6} className={classes.center}>
             <Typography type="display2" gutterBottom>
               Winner: {get(getSortedRecCount(recommendations, users), '[0].name')}
-              {currentTime}
             </Typography>
           </Grid>
           <Grid item xs={3} className={classes.center}>
@@ -225,7 +220,6 @@ class Index extends Component {
       <Grid item xs={10} className={classes.usersList}>
         <Grid container spacing={24}>
           <RecommendationList
-            recommendations={[]}
             heading='Your recommendations'
             recommendations={sortRecsByName(convertObjToArray(getUserRecs(recommendations, localUser)))}
             currentRec={getCurrentRec(recommendations, localUser)}
@@ -237,6 +231,7 @@ class Index extends Component {
               heading={`${get(mappedUser, 'name', 'Something')}'s recommendations`}
               recommendations={sortRecsByName(convertObjToArray(getUserRecs(recommendations, mappedUser)))}
               currentRec={getCurrentRec(recommendations, mappedUser)}
+              absent={mappedUser.absent}
             />
           )}
         </Grid>
