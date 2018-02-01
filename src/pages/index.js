@@ -202,6 +202,7 @@ class Index extends Component {
             <Typography type="display2" gutterBottom>
               Winner: {get(getSortedRecCount(recommendations, users), '[0].name')}
             </Typography>
+            <a href={get(recommendations, `${get(getSortedRecCount(recommendations, users), '[0].id')}.menu`)}>Menu</a>
           </Grid>
           <Grid item xs={3} xl={3} className={classes.center}>
             <Typography type="display1" gutterBottom>

@@ -13,14 +13,18 @@ const styles = {
 
 class AddRecommendation extends Component {
   state = {
-    currentTime: moment()
+    currentTime: moment(),
+  }
+
+  componentWillMount () {
+    const timer = new moment.duration(500).timer({ loop: true }, () => this.setState({ currentTime: moment() }));
   }
 
 
   render() {
     const { currentTime } = this.state;
-    const timer = new moment.duration(500).timer({ loop: true }, () => this.setState({ currentTime: moment() }));
-    const eow = moment().endOf('week').subtract(1, 'days').subtract(15, 'hours').add(1, 'second');
+
+    const eow = moment().endOf('week').subtract(1, 'days').subtract(13.5, 'hours').add(1, 'second');
     return <div>
       <div><Typography type="subheading" gutterBottom>
           {currentTime.format('MMMM Do YYYY, h:mm:ss a')}
