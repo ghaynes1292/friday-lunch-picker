@@ -17,7 +17,7 @@ class AddRecommendation extends Component {
   }
 
   componentWillMount () {
-    const timer = new moment.duration(500).timer({ loop: true }, () => this.setState({ currentTime: moment() }));
+    new moment.duration(500).timer({ loop: true }, () => this.setState({ currentTime: moment() }));
   }
 
 
@@ -26,16 +26,10 @@ class AddRecommendation extends Component {
 
     const eow = moment().endOf('week').subtract(1, 'days').subtract(13.5, 'hours').add(1, 'second');
     return <div>
-      <div><Typography type="subheading" gutterBottom>
-          {currentTime.format('MMMM Do YYYY, h:mm:ss a')}
-        </Typography>
-      </div>
       <div>
-        <Typography type="subheading" gutterBottom>
-          Next pick {currentTime.to(eow)}
+        <Typography type="subheading">
+          Next pick {currentTime.to(eow)}:
         </Typography>
-      </div>
-      <div>
         <Typography type="subheading" gutterBottom>
           {eow.format('MMMM Do YYYY, h:mm:ss a')}
         </Typography>
