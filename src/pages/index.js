@@ -12,6 +12,7 @@ import uuid from 'uuid/v4';
 import flatMap from 'lodash/flatMap';
 import get from 'lodash/get';
 import without from 'lodash/without';
+import moment from 'moment';
 import withRoot from '../components/withRoot';
 import RecommendationList from '../components/RecommendationList';
 import Clock from '../components/Clock';
@@ -57,6 +58,7 @@ class Index extends Component {
     users: {},
     recommendations: {},
     currentRec: '',
+    endOfWeek: moment().endOf('week').subtract(2, 'days').subtract(8.5, 'hours').add(1, 'second')
   };
 
   componentWillMount() {
@@ -153,9 +155,11 @@ class Index extends Component {
   }
 
   handleMakeRec (rec) {
-    const { users, user } = this.state;
+    const { users, user, endOfWeek } = this.state;
     const userNow = users[user.uid];
-
+    if (endOfWeek < moment()) {
+      return;
+    }
     this.setState({
       users: {
         ...users,
@@ -179,7 +183,7 @@ class Index extends Component {
 
   renderLoggedIn () {
     const { classes } = this.props;
-    const { users, user, recommendations } = this.state;
+    const { users, user, recommendations, endOfWeek } = this.state;
     const localUser = users[user.uid];
 
     return user.email.slice(-13) !== '@moove-it.com'
@@ -213,7 +217,7 @@ class Index extends Component {
             </div>)}
           </Grid>
           <Grid item xs={3} className={classes.center}>
-            <Clock />
+            <Clock endOfWeek={endOfWeek} />
           </Grid>
         </Grid>
       </Grid>

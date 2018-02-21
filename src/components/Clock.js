@@ -22,16 +22,16 @@ class AddRecommendation extends Component {
 
 
   render() {
+    const { endOfWeek } = this.props;
     const { currentTime } = this.state;
 
-    const eow = moment().endOf('week').subtract(1, 'days').subtract(13.5, 'hours').add(1, 'second');
     return <div>
       <div>
         <Typography type="subheading">
-          Next pick {currentTime.to(eow)}:
+          Voting ends {currentTime.to(endOfWeek)}:
         </Typography>
         <Typography type="subheading" gutterBottom>
-          {eow.format('MMMM Do YYYY, h:mm:ss a')}
+          {endOfWeek.format('MMMM Do YYYY, h:mm:ss a')}
         </Typography>
       </div>
     </div>
