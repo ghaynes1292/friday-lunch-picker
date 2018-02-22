@@ -28,7 +28,7 @@ class AddRecommendation extends Component {
     return <div>
       <div>
         <Typography type="subheading">
-          Voting ends {currentTime.to(endOfWeek)}:
+          {currentTime < endOfWeek ? 'Voting ends' : 'Voting ended'} {currentTime.to(endOfWeek)}:
         </Typography>
         <Typography type="subheading" gutterBottom>
           {endOfWeek.format('MMMM Do YYYY, h:mm:ss a')}

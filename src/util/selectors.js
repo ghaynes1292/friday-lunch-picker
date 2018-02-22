@@ -46,4 +46,14 @@ export const mostPopularRec = (recs, users) => {
   return countBy(convertObjToArray(users).map(user => user.absent ? undefined : user.currentRecommendation))
 }
 
+export const isATie = (recommendations, users) => {
+  const sortedRecs = getSortedRecCount(recommendations, users);
+  if (sortedRecs.length > 1) {
+    const rec1 = sortedRecs[0];
+    const rec2 = sortedRecs[1];
+    return rec1.currentCount === rec2.currentCount && rec1.totalCount === rec2.totalCount
+  }
+  return false;
+}
+
 export const popularRec = (recs, users, rec) => convertObjToArray(users).filter((user) => user && user.recommendations && !user.absent && user.recommendations.includes(rec)).length

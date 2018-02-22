@@ -18,7 +18,7 @@ import RecommendationList from '../components/RecommendationList';
 import Clock from '../components/Clock';
 
 import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, firebaseDatabase } from '../util/firebase';
-import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec, getSortedRecCount } from '../util/selectors';
+import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec, getSortedRecCount, isATie } from '../util/selectors';
 
 const styles = (theme) => ({
   root: {
@@ -204,9 +204,15 @@ class Index extends Component {
         <Grid container spacing={24}>
           <Grid item xs={4} className={classes.center}>
             <Typography type="display2" gutterBottom>
-              Winner: {get(getSortedRecCount(recommendations, users), '[0].name')}
+              Winner: {isATie(recommendations, users) ? 'Nobody!' : get(getSortedRecCount(recommendations, users), '[0].name')}
             </Typography>
-            <a href={get(recommendations, `${get(getSortedRecCount(recommendations, users), '[0].id')}.menu`)}>Menu</a>
+            {!isATie(recommendations, users)
+              ? (
+              <a href={get(recommendations, `${get(getSortedRecCount(recommendations, users), '[0].id')}.menu`)}>Menu</a>
+            )
+            : (
+              (<div>(Tie)</div>)
+            )}
           </Grid>
           <Grid item xs={3} xl={3} className={classes.center}>
             <Typography type="display1" gutterBottom>
