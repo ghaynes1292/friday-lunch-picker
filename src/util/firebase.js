@@ -16,6 +16,7 @@ export const provider = new firebase.auth.GoogleAuthProvider();
 
 export const dbUsers = firebase.database().ref('users/');
 export const dbRecommendations = firebase.database().ref('recommendations/');
+export const dbOrders = firebase.database().ref('orders/');
 
 export const fbPersistListItems = (listItems) => {
   dbUsers.set();

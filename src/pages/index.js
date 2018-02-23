@@ -13,11 +13,12 @@ import flatMap from 'lodash/flatMap';
 import get from 'lodash/get';
 import without from 'lodash/without';
 import moment from 'moment';
-import withRoot from '../components/withRoot';
 import RecommendationList from '../components/RecommendationList';
 import Clock from '../components/Clock';
+import Orders from '../components/Orders';
+import OrderForm from '../components/OrderForm';
 
-import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, firebaseDatabase } from '../util/firebase';
+import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, dbOrders, firebaseDatabase } from '../util/firebase';
 import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec, getSortedRecCount, isATie } from '../util/selectors';
 
 const styles = (theme) => ({
@@ -57,6 +58,7 @@ class Index extends Component {
     user: null,
     users: {},
     recommendations: {},
+    orders: {},
     currentRec: '',
     endOfWeek: moment().endOf('week').subtract(2, 'days').subtract(8.5, 'hours').add(1, 'second')
   };
@@ -89,6 +91,9 @@ class Index extends Component {
     });
     dbRecommendations.on('value', (snapshot) => {
       this.setState({ recommendations: snapshot.val() });
+    });
+    dbOrders.on('value', (snapshot) => {
+      this.setState({ orders: snapshot.val() });
     });
   }
 
@@ -175,6 +180,40 @@ class Index extends Component {
     firebaseDatabase.ref().update(updates);
   }
 
+  handleUserOrder (order, restaurantId) {
+    const { users, user, orders, endOfWeek } = this.state;
+    const localUser = users[user.uid];
+    const orderId = localUser.orders
+      ? localUser.orders['e361fa8c-dada-425e-a463-134799d862f7']
+      : uuid()
+
+    const userNow = users[user.uid];
+    this.setState({
+      users: {
+        ...users,
+        [user.uid]: {
+          ...userNow,
+          orders: userNow.orders
+          ? {
+            ...userNow.orders,
+            [restaurantId]: orderId
+          }
+          : {
+            [restaurantId]: orderId
+          }
+        }
+      },
+      orders: {
+        ...orders,
+        [orderId]: order
+      }
+    })
+    var updates = {};
+    updates['/users/' + user.uid + '/orders/' + restaurantId] = orderId;
+    updates['/orders/' + orderId] = order;
+    firebaseDatabase.ref().update(updates);
+  }
+
   handleRandom () {
     const { users } = this.state;
     const allRecs = flatMap(Object.values(users), (o) => o.recommendations)
@@ -183,7 +222,7 @@ class Index extends Component {
 
   renderLoggedIn () {
     const { classes } = this.props;
-    const { users, user, recommendations, endOfWeek } = this.state;
+    const { users, user, recommendations, endOfWeek, orders } = this.state;
     const localUser = users[user.uid];
 
     return user.email.slice(-13) !== '@moove-it.com'
@@ -226,6 +265,7 @@ class Index extends Component {
             <Clock endOfWeek={endOfWeek} />
           </Grid>
         </Grid>
+
       </Grid>
       <Grid item xs={3} className={classes.masterList}>
         <Grid container spacing={24} className={classes.justifyCenter}>
@@ -257,6 +297,31 @@ class Index extends Component {
               absent={mappedUser.absent}
             />
           )}
+          <Orders
+            endOfWeek={endOfWeek}
+            orders={[
+              {
+                id: 'abcd',
+                order: 'Taco plate (1 chicken 1 steak on corn)',
+                users: ['Gavin', 'Tony']
+              },
+              {
+                id: 'defas',
+                order: 'mexican salad. triple “meat:” +chicken +steak +sauteed vegetables. chips and salsa.',
+                users: ['Hayley', 'Danny', 'Jared']
+              }
+            ]}
+          />
+          <OrderForm
+            orderText={localUser.orders && localUser.orders['e361fa8c-dada-425e-a463-134799d862f7']
+              ? orders[localUser.orders['e361fa8c-dada-425e-a463-134799d862f7']]
+              : ''
+            }
+            onChange={(event) => this.handleUserOrder(
+              event.target.value,
+              'e361fa8c-dada-425e-a463-134799d862f7'
+            )}
+          />
         </Grid>
       </Grid>
     </Grid>
