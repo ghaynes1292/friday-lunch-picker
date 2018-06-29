@@ -2,12 +2,13 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 import compose from 'recompose/compose';
-import { withStyles } from 'material-ui/styles';
-import withWidth from 'material-ui/utils/withWidth';
+import { withStyles } from '@material-ui/core/styles';
+import withWidth from '@material-ui/core/withWidth';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import uuid from 'uuid/v4';
 import flatMap from 'lodash/flatMap';
 import get from 'lodash/get';
@@ -15,8 +16,6 @@ import without from 'lodash/without';
 import moment from 'moment';
 import RecommendationList from '../components/RecommendationList';
 import Clock from '../components/Clock';
-import Orders from '../components/Orders';
-import OrderForm from '../components/OrderForm';
 
 import { userSignIn, firebaseAuth, dbUsers, dbRecommendations, dbOrders, firebaseDatabase } from '../util/firebase';
 import { getUserRecs, sortRecsByName, convertObjToArray, recsAndUserRecs, getCurrentRec, getSortedRecCount, isATie } from '../util/selectors';
@@ -60,10 +59,12 @@ class Index extends Component {
     recommendations: {},
     orders: {},
     currentRec: '',
-    endOfWeek: moment().endOf('week').subtract(2, 'days').subtract(8.5, 'hours').add(1, 'second')
+    endOfWeek: moment().endOf('week').subtract(2, 'days').subtract(8.5, 'hours').add(1, 'second'),
+    loading: false,
   };
 
   componentWillMount() {
+    this.setState({ loading: true });
     firebaseAuth().onAuthStateChanged(user => {
       if (user) {
         return dbUsers.once('value').then((snapshot) => {
@@ -81,7 +82,7 @@ class Index extends Component {
               email: user.email
             });
           } else {
-            this.setState({ user: user, users: snapshot.val() })
+            this.setState({ user: user, users: snapshot.val(), loading: false })
           }
         });
       }
@@ -265,7 +266,6 @@ class Index extends Component {
             <Clock endOfWeek={endOfWeek} />
           </Grid>
         </Grid>
-
       </Grid>
       <Grid item xs={3} className={classes.masterList}>
         <Grid container spacing={24} className={classes.justifyCenter}>
@@ -297,31 +297,6 @@ class Index extends Component {
               absent={mappedUser.absent}
             />
           )}
-          <Orders
-            endOfWeek={endOfWeek}
-            orders={[
-              {
-                id: 'abcd',
-                order: 'Taco plate (1 chicken 1 steak on corn)',
-                users: ['Gavin', 'Tony']
-              },
-              {
-                id: 'defas',
-                order: 'mexican salad. triple “meat:” +chicken +steak +sauteed vegetables. chips and salsa.',
-                users: ['Hayley', 'Danny', 'Jared']
-              }
-            ]}
-          />
-          <OrderForm
-            orderText={localUser.orders && localUser.orders['e361fa8c-dada-425e-a463-134799d862f7']
-              ? orders[localUser.orders['e361fa8c-dada-425e-a463-134799d862f7']]
-              : ''
-            }
-            onChange={(event) => this.handleUserOrder(
-              event.target.value,
-              'e361fa8c-dada-425e-a463-134799d862f7'
-            )}
-          />
         </Grid>
       </Grid>
     </Grid>
@@ -344,7 +319,8 @@ class Index extends Component {
   }
 
   render() {
-    const { user } = this.state;
+    const { user, loading } = this.state;
+    if (loading) return <CircularProgress size={200} style={{ margin: 'auto', display: 'block' }} />
     return user
       ? this.renderLoggedIn()
       : this.renderLoggedOut()

@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
-import Star from 'material-ui-icons/Star';
-import AddCircle from 'material-ui-icons/AddCircle';
-import Favorite from 'material-ui-icons/Favorite';
-import MoodBad from 'material-ui-icons/MoodBad';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Star from '@material-ui/icons/Star';
+import AddCircle from '@material-ui/icons/AddCircle';
+import Favorite from '@material-ui/icons/Favorite';
+import MoodBad from '@material-ui/icons/MoodBad';
 
 const styles = theme => ({
   root: {
